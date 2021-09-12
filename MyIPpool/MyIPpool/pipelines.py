@@ -12,10 +12,8 @@ import requests
 
 class MyippoolPipeline:
     def process_item(self, item, spider):
-        if self.judge(item):
-            print(item)
-        else:
-            print('meiyong',item)
+
+        print(item)
 
 
         return item
