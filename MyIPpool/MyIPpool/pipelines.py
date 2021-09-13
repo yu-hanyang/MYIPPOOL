@@ -8,7 +8,9 @@
 from itemadapter import ItemAdapter
 
 import requests
-
+import pymysql
+from .settings import *
+import datetime
 
 class MyippoolPipeline:
     def process_item(self, item, spider):
@@ -19,24 +21,43 @@ class MyippoolPipeline:
         return item
 
 
-    def judge(self,d):
-        ip=d['ip']
-        port=d['port']
-        url='https://www.baidu.com'
-        proxies = {
-            'https': 'https://{}:{}'.format(ip, port),
-            'http': 'http://{}:{}'.format(ip, port)
-        }
-        headers={
-            'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+class MyippoolmysqlPipeline:
+    def open_spider(self,spider):
+        self.db = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, database=MYSQL_DB, passwd=MYSQL_PWD, charset=CHARSET)
+        self.cur = self.db.cursor()
 
-        }
+    def process_item(self,item, spider):
+        ins = 'insert into myippool(ip, port, protocal, create_time) values(%s %s %s %s)'
+        x = datetime.datetime.now()
+        now = str(x.strftime("%Y")) + '-' + str(x.strftime("%m")) + '-' + str(x.strftime("%d"))
+        li = [item['ip'],item['port'],item['protocol'],now]
+        self.cur.execute(ins, li)
+        self.db.commit()
+        return item
 
-        try:
-            rep=requests.get(url=url,proxies=proxies,headers=headers,timeout=3).status_code
-            print(rep)
-            if rep==200:
-                return True
-            else:return False
-        except:
-            return False
+    def close_spider(self,spider):
+        self.cur.close()
+        self.db.close()
+
+
+    # def judge(self,d):
+    #     ip=d['ip']
+    #     port=d['port']
+    #     url='https://www.baidu.com'
+    #     proxies = {
+    #         'https': 'https://{}:{}'.format(ip, port),
+    #         'http': 'http://{}:{}'.format(ip, port)
+    #     }
+    #     headers={
+    #         'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+    #
+    #     }
+    #
+    #     try:
+    #         rep=requests.get(url=url,proxies=proxies,headers=headers,timeout=3).status_code
+    #         print(rep)
+    #         if rep==200:
+    #             return True
+    #         else:return False
+    #     except:
+    #         return False
