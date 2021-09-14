@@ -92,7 +92,7 @@ ITEM_PIPELINES = {
 MYSQL_HOST = "localhost"
 
 MYSQL_USER = "root"
-MYSQL_PWD = r""
+MYSQL_PWD = r"!23QWEasd"
 
 MYSQL_DB ="myippool"
 

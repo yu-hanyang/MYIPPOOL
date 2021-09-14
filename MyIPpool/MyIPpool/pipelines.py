@@ -27,11 +27,12 @@ class MyippoolmysqlPipeline:
         self.cur = self.db.cursor()
 
     def process_item(self,item, spider):
-        ins = 'insert into myippool(ip, port, protocal, create_time) values(%s %s %s %s)'
+        ins = "insert into myippool('ip','port','protocal') values(%s %s %s)"
         x = datetime.datetime.now()
         now = str(x.strftime("%Y")) + '-' + str(x.strftime("%m")) + '-' + str(x.strftime("%d"))
-        li = [item['ip'],item['port'],item['protocol'],now]
-        self.cur.execute(ins, li)
+        li = [item['ip'],item['port'],item['protocol']]
+        #self.cur.execute(ins, li)
+        self.cur.execute(f"insert into myippool('ip','port','protocal') values('{item['ip']}' '{item['port']}' '{item['protocol']}')")
         self.db.commit()
         return item
 

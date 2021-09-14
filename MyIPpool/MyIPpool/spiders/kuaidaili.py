@@ -9,7 +9,7 @@ class KuaidailiSpider(scrapy.Spider):
 
     # start_urls = ['http://www.kuaidaili.com/free/inha/1/']
     def start_requests(self):
-        for i in range(1, 10):
+        for i in range(1, 2):
             u = f'https://www.kuaidaili.com/free/inha/{i}/'
             yield scrapy.Request(url=u, callback=self.parse)
 
@@ -20,8 +20,8 @@ class KuaidailiSpider(scrapy.Spider):
             item['ip'] = i.xpath('./td[@data-title="IP"]/text()').get()
             item['port'] = i.xpath('./td[@data-title="PORT"]/text()').get()
             item['protocol'] = i.xpath('./td[@data-title="类型"]/text()').get()
-            if self.judge(item):
-                yield item
+            #if self.judge(item):
+            yield item
 
     def judge(self, d):
         ip = d['ip']
