@@ -32,8 +32,16 @@ class MyippoolmysqlPipeline:
         now = str(x.strftime("%Y")) + '-' + str(x.strftime("%m")) + '-' + str(x.strftime("%d"))
         li = [item['ip'],item['port'],item['protocol']]
         #self.cur.execute(ins, li)
-        self.cur.execute(f"insert into myippool('ip','port','protocal') values('{item['ip']}' '{item['port']}' '{item['protocol']}')")
+        d_data={
+            'd_ip':item['ip'],
+            'd_port':item['port'],
+            'd_protocol':item['protocol']
+        }
+        # self.cur.execute("insert into myippool('ip','port','protocal') values(%s %s %s)",
+        #                  (item['ip'], item['port'], item['protocol']))
+        self.cur.execute("insert into myippool(ip,port,protocal) values(%s, %s, %s)" , (str(item['ip']), str(item['port']), str(item['protocol'])))
         self.db.commit()
+
         return item
 
     def close_spider(self,spider):
